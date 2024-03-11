@@ -20,36 +20,29 @@ namespace CineversePractice
             InitializeComponent();
         }
 
-        public void add()
+        public async Task addAsync()
         {
             MySqlConnection conn = ConnectionDB.getConnection();
-
-            String addMovieQuery = "INSERT INTO movie (title, price) VALUES (@title, @price)";
-            MySqlCommand cmdMovie = new MySqlCommand(addMovieQuery, conn);
-            cmdMovie.Parameters.AddWithValue("@title", txt_movieName.Text);
-            cmdMovie.Parameters.AddWithValue("@price", txt_moviePrice.Text);
 
             try
             {
                 conn.Open();
 
-                int rowsAffected = cmdMovie.ExecuteNonQuery();
-                     
-                String addShowtimeQuery = "INSERT INTO showtime (date) VALUES (@date)";
+                // Add movie
+                string addMovieQuery = "INSERT INTO movie (title, price) VALUES (@title, @price)";
+                MySqlCommand cmdMovie = new MySqlCommand(addMovieQuery, conn);
+                cmdMovie.Parameters.AddWithValue("@title", txt_movieName.Text);
+                cmdMovie.Parameters.AddWithValue("@price", txt_moviePrice.Text);
+                cmdMovie.ExecuteNonQuery();  // Insert movie without retrieving movie_id
+
+                // Add showtime with movie_id retrieved using LAST_INSERT_ID()
+                string addShowtimeQuery = "INSERT INTO showtime (movie_id, date) VALUES (LAST_INSERT_ID(), @date)";
                 MySqlCommand cmdShowtime = new MySqlCommand(addShowtimeQuery, conn);
                 cmdShowtime.Parameters.AddWithValue("@date", setDate.Text);
+                cmdShowtime.ExecuteNonQuery();  // Insert showtime using LAST_INSERT_ID() directly
 
-                int rowsAffected1 = cmdShowtime.ExecuteNonQuery();
-
-                if (rowsAffected1 > 0 && rowsAffected > 0)
-                {
-                    MessageBox.Show("Success");
-                }
-                else
-                {
-                    MessageBox.Show("Failed");
-                }
-            } 
+                MessageBox.Show("Successfully added movie and showtime.");
+            }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
@@ -62,7 +55,7 @@ namespace CineversePractice
 
         private void button1_Click(object sender, EventArgs e)
         {
-            add();
+            addAsync();
         }
     }
 }
