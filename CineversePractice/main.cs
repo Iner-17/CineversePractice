@@ -18,34 +18,53 @@ namespace CineversePractice
         public main()
         {
             InitializeComponent();
+
+          
+            
         }
 
-        public async Task addAsync()
+        public void add()
         {
             MySqlConnection conn = ConnectionDB.getConnection();
 
+            
             try
             {
+
                 conn.Open();
+                string InsertMovieQuery = "INSERT INTO movies (movie_title, movie_price, movie_duration) VALUES (@title, @price, @duration);";
+                MySqlCommand insertMovieCmd = new MySqlCommand(InsertMovieQuery, conn);
+                insertMovieCmd.Parameters.AddWithValue("@title", txt_movieName.Text);
+                insertMovieCmd.Parameters.AddWithValue("@price", textBox1.Text);
+                insertMovieCmd.Parameters.AddWithValue("@duration", txt_duration.Text);
+                insertMovieCmd.ExecuteNonQuery();
 
-                // Add movie
-                string addMovieQuery = "INSERT INTO movie (title, price) VALUES (@title, @price)";
-                MySqlCommand cmdMovie = new MySqlCommand(addMovieQuery, conn);
-                cmdMovie.Parameters.AddWithValue("@title", txt_movieName.Text);
-                cmdMovie.Parameters.AddWithValue("@price", txt_moviePrice.Text);
-                cmdMovie.ExecuteNonQuery();  // Insert movie without retrieving movie_id
 
-                // Add showtime with movie_id retrieved using LAST_INSERT_ID()
-                string addShowtimeQuery = "INSERT INTO showtime (movie_id, date) VALUES (LAST_INSERT_ID(), @date)";
-                MySqlCommand cmdShowtime = new MySqlCommand(addShowtimeQuery, conn);
-                cmdShowtime.Parameters.AddWithValue("@date", setDate.Text);
-                cmdShowtime.ExecuteNonQuery();  // Insert showtime using LAST_INSERT_ID() directly
 
-                MessageBox.Show("Successfully added movie and showtime.");
+                int movieId = (int)insertMovieCmd.LastInsertedId;
+
+                foreach (string date in cbx_datesList.Items)
+                {
+                    foreach (string time in cbx_timeList.Items)
+                    {
+
+                        string insertScreeningQuery = "INSERT INTO screenings (movie_id, date, time_start) VALUES (@movieId, @date, @time);";
+                        MySqlCommand insertScreeningCmd = new MySqlCommand(insertScreeningQuery, conn);
+                        insertScreeningCmd.Parameters.AddWithValue("@movieId", movieId);
+                        insertScreeningCmd.Parameters.AddWithValue("@date", date);
+                        insertScreeningCmd.Parameters.AddWithValue("@time", time);
+                        insertScreeningCmd.ExecuteNonQuery();
+
+                        
+                    }
+                }
+                
+                MessageBox.Show("Successfully Added movie");
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("ERROR" + ex.Message);
+                
             }
             finally
             {
@@ -55,7 +74,36 @@ namespace CineversePractice
 
         private void button1_Click(object sender, EventArgs e)
         {
-            addAsync();
+            add();
+
+            cbx_datesList.Items.Clear();
+            cbx_timeList.Items.Clear();
+        }
+
+        private void dtp_time_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btn_addDate_Click(object sender, EventArgs e)
+        {
+            string selectedDate = dtp_dates.Text;
+            if (!selectedDate.Equals("Dates Added"))
+            {
+                cbx_datesList.Items.Add(selectedDate);
+            }
+            
+            
+        }
+
+        private void btn_addTime_Click(object sender, EventArgs e)
+        {
+            string selectedTime = dtp_time.Text;
+            
+            if (!selectedTime.Equals("00:00")) // Exclude the default time
+            {
+                cbx_timeList.Items.Add(selectedTime);
+            }
         }
     }
 }
