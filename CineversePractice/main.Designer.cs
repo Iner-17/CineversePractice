@@ -54,6 +54,7 @@
             this.btn_addTime = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
+            this.button2 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -272,7 +273,7 @@
             // 
             // dtp_dates
             // 
-            this.dtp_dates.CustomFormat = "MMM dd,  yyy";
+            this.dtp_dates.CustomFormat = "MMM dd, yyy";
             this.dtp_dates.Font = new System.Drawing.Font("Montserrat", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dtp_dates.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.dtp_dates.Location = new System.Drawing.Point(77, 289);
@@ -282,7 +283,7 @@
             // 
             // dtp_time
             // 
-            this.dtp_time.CustomFormat = "HH: mm";
+            this.dtp_time.CustomFormat = "HH:mm";
             this.dtp_time.Font = new System.Drawing.Font("Montserrat", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dtp_time.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.dtp_time.Location = new System.Drawing.Point(362, 289);
@@ -333,11 +334,22 @@
             this.label9.TabIndex = 21;
             this.label9.Text = "Time Added";
             // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(77, 411);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 22;
+            this.button2.Text = "get";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
             // main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(797, 555);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.btn_addTime);
@@ -402,6 +414,7 @@
         private System.Windows.Forms.Button btn_addTime;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Button button2;
     }
 }
 

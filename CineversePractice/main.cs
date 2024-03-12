@@ -9,6 +9,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Google.Protobuf.WellKnownTypes;
 using MySql.Data.MySqlClient;
 
 namespace CineversePractice
@@ -119,6 +120,33 @@ namespace CineversePractice
             {
                 cbx_timeList.Items.Add(selectedTime);
             }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            MySqlConnection conn = ConnectionDB.getConnection();
+
+            string date = "Mar 01, 2024";
+            string time = "09:00";
+            string title = "the movie maker";
+
+            int screeningId = -1;
+
+            string query = "SELECT screening_id FROM screenings INNER JOIN movies ON movies.movie_id = screenings.movie_id WHERE date = @Date AND time_start = @Time AND movie_title = @Title";
+            MySqlCommand cmd = new MySqlCommand(query, conn);
+            cmd.Parameters.AddWithValue("@Date", date);
+            cmd.Parameters.AddWithValue("@Time", time);
+            cmd.Parameters.AddWithValue("@Title", title);
+            conn.Open();
+            object result = cmd.ExecuteScalar();
+
+            if (result != null) 
+            {
+                screeningId = Convert.ToInt32(result);
+            }
+
+
+            MessageBox.Show("choose from set" + screeningId);
         }
     }
 }
