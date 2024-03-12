@@ -42,7 +42,7 @@ namespace CineversePractice
 
 
                 int movieId = (int)insertMovieCmd.LastInsertedId;
-
+                
                 foreach (string date in cbx_datesList.Items)
                 {
                     foreach (string time in cbx_timeList.Items)
@@ -55,9 +55,24 @@ namespace CineversePractice
                         insertScreeningCmd.Parameters.AddWithValue("@time", time);
                         insertScreeningCmd.ExecuteNonQuery();
 
-                        
+                        int screeningId = (int)insertScreeningCmd.LastInsertedId;
+
+                        for (int i = 0; i <= 10; i++)
+                        {
+                            string seatCode = "A" + i;
+                            string insertSeatsQuery = "INSERT INTO seat (screening_id, seatcode, availability) VALUES (@screeningId, @seatcode, @availabiltiy);";
+                            MySqlCommand insertSeatsCmd = new MySqlCommand(insertSeatsQuery, conn);
+                            insertSeatsCmd.Parameters.AddWithValue("@screeningId", screeningId);
+                            insertSeatsCmd.Parameters.AddWithValue("@seatcode", seatCode);
+                            insertSeatsCmd.Parameters.AddWithValue("@availabiltiy", 1);
+                            insertSeatsCmd.ExecuteNonQuery();
+                        }
                     }
                 }
+
+        
+                 
+                
                 
                 MessageBox.Show("Successfully Added movie");
             }
